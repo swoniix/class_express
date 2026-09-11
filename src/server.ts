@@ -1,136 +1,96 @@
-import http from "node:http" // модуль для створення сервера
-import fs from "node:fs"
-import path from "node:path"
-import {URL} from "node:url" // клас для роботи з URL
-import 'dotenv/config'
-import dorenv from "dotenv"
-
-import {books} from "./data/books.js"
-import {showBooks} from "./utilis/showBooks.js"
+import express from "express"
+import "dotenv/config"
 import { BookType } from "./types/BookType.js"
+import { BookResType } from "./types/bookResType.js"
 
-const config = dorenv.config() // зчитування .env файлу
- 
-// createServer - створення серверу
-// (req, res) => {} - ф-ція, що буде виконуватися кожного разу, коли клієнт роьитиме http-запит
-const server = http.createServer((req,res) => { 
-    // візьми req.url, а якщо його немає - візьми /
-    // ?? - оператор нульового злиття. повертає праве значння лише якщо ліве значення дорівнює null/underfined. у іншому випадку він повертає ліве значення
-    const url = new URL(req.url ?? "/", `http://${req.headers.host}`)
-    console.log(url);
-    
-    // створення шляху з правильними розділювачами
-    const PATH_TO_PAGES = path.join("src", "pages");
+const cl = console.log
+const PORT = process.env.PORT || 4200
+const HOST = process.env.HOST || "http://localhost"
 
-    // якщо запрос GET та url -> books
-    if (req.method === "GET" && req.url === '/books') {
-        let books_content: string = 
-        "<html><head><link rel=\"stylesheet\" href=\"book.css\"></head><body><div class=\"container\">";
-        
-        books.forEach((book) => {
-            books_content += showBooks(book);
-        });
-        books_content += `</div></body></html>`;
+const app = express()
 
-        // відправка HTML
-        res.setHeader("Content-Type", "text/html; charset=utf-8");
-        res.end(books_content);
-        return; //зупиняє callback, тобто сервер не піде перевіряти наступні if
+// Масив книжок 
+const books: BookType[] = [
+    {
+        id: 1,
+        title: "book1",
+        price: 250,
+        isActive: true
+    },
+    {
+        id: 2,
+        title: "book2",
+        price: 320,
+        isActive: true
+    },
+    {
+        id: 3,
+        title: "book3",
+        price: 400,
+        isActive: true
+    }
+]
+app.get('/books/:id', (req, res) => {
+    const id: number = +req.params.id
+    const book: BookType | undefined = books.find((books) => books.id === id)
+    cl(book)
+    let status_code: number = 200
+    const response: BookResType = {
+        data: null,
+        error: null
+    }
+    if (book === undefined) {
+        // res.writeHead(200, {
+        //     "Content-Type": "application/json"
+        // }) // res.end(JSON.stringify(books))
+        status_code = 404
+        response.error = "The Book not found"
+    }
+    else {
+        status_code = 200
+        response.data = book
+    }
+    res.writeHead(status_code, {
+        "Content-Type": "application/json"
+    })
+    res.end(JSON.stringify(response))
+})
+const deletedBooks: BookType[] = []
+app.delete('/books/:id', (req, res) => {
+    const id: number = +req.params.id
+    const bookIndex: number = books.findIndex((book) => book.id === id)
+
+    let status_code: number = 200
+    const response: BookResType = {
+        data: null,
+        error: null
     }
 
-    else if (req.method === "GET" && url.pathname === '/book') {
-        const idParam = url.searchParams.get("id");
-
-        if (idParam !== null) {
-            const id: number = Number(idParam);
-            const book: BookType | undefined = books.find(book => book.id === id);
-
-            if (book !== undefined) {
-                // Огортаємо в повноцінну HTML-структуру, щоб підключилися стилі
-                const htmlResponse = `
-                    <html>
-                        <head>
-                            <link rel="stylesheet" href="book.css">
-                        </head>
-                        <body>
-                            <div class="container">
-                                ${showBooks(book)}
-                            </div>
-                        </body>
-                    </html>
-                `;
-                res.setHeader("Content-Type", "text/html; charset=utf-8");
-                res.end(htmlResponse);
-                return; // ОБОВ'ЯЗКОВО зупиняємо виконання!
-            } else {
-                res.statusCode = 404;
-                res.end("Книгу не знайдено");
-                return;
-            }
-        }
-
-        res.statusCode = 400;
-        res.end("Не вказано id книги");
-        return;
-    }
-    else if(req.method==="POST" && req.url==="books") {
-        res.end("ok")
+    if (bookIndex === -1) {
+        status_code = 404
+        response.error = "The Book not found or already deleted"
+    } else {
+        const deletedBook: BookType = books.splice(bookIndex, 1)[0]
+        status_code = 200
+        response.data = deletedBook
     }
 
-    if (req.method === "GET" && path.extname(req.url as string) === '.css') {
-        // Видаляємо початковий слеш з req.url, щоб шлях сформувався коректно
-        const cssFileName = (req.url as string).substring(1);
-        const PATH_TO_CSS = path.join("src", "styles", cssFileName);
+    res.writeHead(status_code, { "Content-Type": "application/json" })
+    res.end(JSON.stringify(response))
+})
 
-        if (fs.existsSync(PATH_TO_CSS)) {
-            const content = fs.readFileSync(PATH_TO_CSS);
-            res.setHeader("Content-Type", "text/css; charset=utf-8");
-            res.end(content);
-        } else {
-            res.statusCode = 404;
-            res.end("CSS not found");
-        }
-        return;
-    }
+app.get('/deleted-books', (req, res) => {
+    res.json(deletedBooks)
+})
 
-    if (req.method === "GET" && req.url === '/') {
-        const PATH_TO_INDEX_PAGE = path.join(PATH_TO_PAGES, "index.html");
-        const content = fs.readFileSync(PATH_TO_INDEX_PAGE);
-        res.setHeader("Content-Type", "text/html; charset=utf-8");
-        res.end(content);
-        return;
-    }
+app.get('/', (req, res) => {
+    res.send("<h2>Сервер працює! Перейди на /books</h2>")
+})
 
-    if (req.method === "GET" && req.url === '/about') {
-        const PATH_TO_ABOUT_PAGE = path.join(PATH_TO_PAGES, "about.html");
-        const content = fs.readFileSync(PATH_TO_ABOUT_PAGE);
-        res.setHeader("Content-Type", "text/html; charset=utf-8");
-        res.end(content);
-        return;
-    }
+app.get('/books', (req, res) => {
+    res.json(books)
+})
 
-    if (req.method === "POST") {
-        res.setHeader("Content-Type", "application/json; charset=utf-8");
-        const user = {
-            name: "Alex",
-            age: 20,
-            method: req.method
-        };
-        res.end(JSON.stringify(user));
-        return;
-    }
-
-    if (req.method === "PUT") {
-        res.setHeader("Content-Type", "text/plain; charset=utf-8");
-        res.end(`Ти хочеш оновити дані. Request: ${req.method}`);
-        return;
-    }
-
-    res.statusCode = 404;
-    res.end("404 Not Found");
-});
-
-server.listen(process.env.PORT,()=>{
-    console.log(`Server http://localhost:${process.env.HOST} has been started...`)
-    console.log(`Server name: ${process.env.SERVER_NAME}`);
+app.listen(PORT, () => {
+    cl(`Server has been started: ${HOST}:${PORT}`)
 })

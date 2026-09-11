@@ -1,12 +1,5 @@
-GET http://localhost:4200
 
-###
+DELETE http://localhost:4200/books/3
 
-POST http://localhost:4200
-content-type: application/json;
 
-{
-    "title": "test book",
-    "price": 2000,
-    "isActive": true
-}
+GET  http://localhost:4200/books
