@@ -1,8 +1,10 @@
-export type BookType = {
-    id: number,
-    // | string - буде два варіанта типів даних, якщо додати |
-    title: string,
-    price: number,
-    isActive?: boolean 
-    // дозволяє ?: створювати об'єкти без поля, де є цей оператор
-};
+type BookType = {
+    id:number,
+    title:string,
+    price:number,
+    is_active:boolean,
+    image?:string
+}
+
+type BookCreateType = Omit<BookType, "id">;
+export {BookType, BookCreateType}

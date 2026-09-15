@@ -1,7 +1,7 @@
 import { BookType } from "./BookType.js"
 
-export type BookResType = {
-  data: null | BookType | BookType[],
-  error: null | string
-  status: number
+export type BookResponseType = {
+    data:null|BookType|BookType[],
+    error:null|string,
+    status:number
 }

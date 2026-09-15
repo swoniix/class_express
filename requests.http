@@ -1,5 +1,17 @@
 
-DELETE http://localhost:4200/books/3
 
+GET  http://localhost:3200/books
 
-GET  http://localhost:4200/books
+###
+
+DELETE http://localhost:3200/books/2
+
+###
+PUT http://localhost:3200/books/4
+Content-Type: application/json
+
+{
+    "title": "New Book",
+    "price": 500,
+    "is_active": true
+}
