@@ -20,17 +20,17 @@ router.get(
   async(
     req: Request<{}, BookResponseType, null, { title: string }>,
     res: Response) => {
-    // const result = await pool.query("SELECT * FROM books");
-    //   res.json(result.rows)
+    //  const result = await pool.query("SELECT * FROM books");
+    //    res.json(result.rows)
   //отримання сіх книжок або пошук по тайтлу
 
-  // const exist_book: boolean = books.length > 0
-  // const title = String(req.query.title)
-  // let our_books: BookType[] | null = null;
-  // if (title !== undefined) {
-  //   our_books = getBooksByTitle(title, books)
-  // }
-
+   const exist_book: boolean = books.length > 0
+   const title = String(req.query.title)
+   let our_books: BookType[] | null = null;
+   if (title !== undefined) {
+     our_books = getBooksByTitle(title, books)
+   }
+   res.render("pages/book", {books})
   // const response: BookResponseType = {
   //   data: exist_book ? (our_books !== null ? our_books : books) : null,
   //   error: exist_book ? null : "Books list is empty",

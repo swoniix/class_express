@@ -1,0 +1,10 @@
+<p>Books page</p>
+<h1>Books</h1>
+<ul>
+    <% books.forEach(book =>{ %>
+        <li>
+            <%=book.title %> - <%= book.price %>
+            <img src="image/<%= book.image %>" width="200" height="150" >
+        </li>
+   <% }) %>
+</ul>
