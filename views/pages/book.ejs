@@ -1,10 +1,174 @@
-<p>Books page</p>
-<h1>Books</h1>
-<ul>
-    <% books.forEach(book =>{ %>
-        <li>
-            <%=book.title %> - <%= book.price %>
-            <img src="image/<%= book.image %>" width="200" height="150" >
-        </li>
-   <% }) %>
-</ul>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        color: #222;
+    }
+
+    .books-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .books-page h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 36px;
+    }
+
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+    }
+
+    .book-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+    }
+
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .book-card__image {
+        width: 100%;
+        height: 280px;
+        overflow: hidden;
+    }
+
+    .book-card__image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .book-card__content {
+        padding: 20px;
+    }
+
+    .book-card__title {
+        margin: 0 0 20px;
+        font-size: 20px;
+    }
+
+    .book-card__bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .book-card__price {
+        font-size: 20px;
+        font-weight: bold;
+        color: #e63946;
+    }
+
+    .book-card__button {
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        background-color: #222;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .book-card__button:hover {
+        background-color: #444;
+    }
+
+    /* Планшет */
+    @media (max-width: 900px) {
+        .books-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* Телефон */
+    @media (max-width: 650px) {
+        .books-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .book-card__image {
+            height: 220px;
+        }
+
+        .book-card__content {
+            padding: 15px;
+        }
+
+        .book-card__title {
+            font-size: 17px;
+        }
+
+        .book-card__bottom {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .book-card__button {
+            width: 100%;
+        }
+    }
+
+    /* Маленький телефон */
+    @media (max-width: 400px) {
+        .books-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="books-page">
+    <h1>Books</h1>
+
+    <div class="books-grid">
+        <% books.forEach(book => { %>
+
+            <article class="book-card">
+
+                <div class="book-card__image">
+                    <img
+                        src="/image/<%= book.image %>"
+                        alt="<%= book.title %>"
+                    >
+                </div>
+
+                <div class="book-card__content">
+
+                    <h2 class="book-card__title">
+                        <%= book.title %>
+                    </h2>
+
+                    <div class="book-card__bottom">
+
+                        <span class="book-card__price">
+                            <%= book.price %> $
+                        </span>
+
+                        <button class="book-card__button">
+                            Купить
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        <% }) %>
+    </div>
+</div>
