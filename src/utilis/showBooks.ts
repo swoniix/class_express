@@ -2,6 +2,7 @@ import { BookType } from "../types/BookType.js";
 
 type showBookType = (book:BookType)=>string;
 type showBooksType = (book:Array<BookType>)=>string;
+type compareBookType=(book:BookType)=>string
 
 type getBooksByTitleType = (title:string, books:BookType[])=>BookType[]|null;
 

@@ -20,8 +20,8 @@ router.get(
   async(
     req: Request<{}, BookResponseType, null, { title: string }>,
     res: Response) => {
-    const result = await pool.query("SELECT * FROM books");
-      res.json(result.rows)
+    // const result = await pool.query("SELECT * FROM books");
+    //   res.json(result.rows)
   //отримання сіх книжок або пошук по тайтлу
 
   // const exist_book: boolean = books.length > 0
