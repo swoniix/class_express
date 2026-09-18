@@ -137,38 +137,27 @@
 
     <div class="books-grid">
         <% books.forEach(book => { %>
-
             <article class="book-card">
-
                 <div class="book-card__image">
                     <img
                         src="/image/<%= book.image %>"
                         alt="<%= book.title %>"
                     >
                 </div>
-
                 <div class="book-card__content">
-
                     <h2 class="book-card__title">
                         <%= book.title %>
                     </h2>
-
                     <div class="book-card__bottom">
-
                         <span class="book-card__price">
                             <%= book.price %> $
                         </span>
-
-                        <button class="book-card__button">
-                            Купить
-                        </button>
-
+                        <a href="/books/<%= book.id %>" class="book-card__button text-decoration-none">
+                            Подробнее
+                        </a>
                     </div>
-
                 </div>
-
             </article>
-
         <% }) %>
     </div>
 </div>
