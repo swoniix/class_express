@@ -4,8 +4,54 @@ import { BookResponseType } from "../types/bookResType.js";
 import { books } from "../data/books.js";
 import { compareBook } from "../utilis/showBooks.js";
 import { pool } from "../db/database.js";
+import multer from "multer"
+import path from "node:path";
 
 const router = Router()
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join("public", "image"))
+    },
+    filename: (req, file, cb) => {
+        const uniqueFileName = Date.now() + '_' + file.originalname
+        req.image = uniqueFileName
+        cb(null, uniqueFileName)
+    }
+})
+const upload = multer({ storage })
+
+//add Books 
+router.get(
+    "/add-book",
+    (
+        req: Request,
+        res: Response,
+    ) => {
+        res.render("pages/bookForm", { title: "Add Book" })
+    }
+)
+
+router.post(
+    "/add-book",
+    upload.single("image"),
+    (
+        req: Request<{}, BookCreateType>,
+        res: Response,
+    ) => {
+        const { title, price, year } = req.body
+        const is_active = req.body.is_active ? true : false
+        const book: BookType = {
+            id: 10000,
+            title,
+            price,
+            is_active,
+            image: req.image
+        }
+        console.log(req.body)
+        res.end()
+    }
+)
 
 // GET /books: книги из PostgreSQL для страницы каталога.
 router.get("/", async (req, res, next) => {

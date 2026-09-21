@@ -4,8 +4,6 @@ import router from "./routes/bookRoutes.js"
 import path from "node:path"
 import ejs from "ejs"
 import expressEjsLayouts from "express-ejs-layouts"
-
-
 import { fileURLToPath } from "node:url"
 
 const __filename = fileURLToPath(import.meta.url)
@@ -16,6 +14,7 @@ const PORT = process.env.PORT || 3200
 const HOST = process.env.HOST || "http://localhost"
 
 const app = express()
+app.use(express.urlencoded({ extended: true }))
 app.use(express.static("public"))
 app.use(express.json()) //body -> json
 // //middleware - попередній обробник
