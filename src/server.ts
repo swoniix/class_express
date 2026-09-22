@@ -5,6 +5,7 @@ import path from "node:path"
 import ejs from "ejs"
 import expressEjsLayouts from "express-ejs-layouts"
 import { fileURLToPath } from "node:url"
+import { loggerMiddleware } from "./middlewares/loggerMiddleware.js"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 3200
 const HOST = process.env.HOST || "http://localhost"
 
 const app = express()
+app.use(loggerMiddleware);
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static("public"))
 app.use(express.json()) //body -> json

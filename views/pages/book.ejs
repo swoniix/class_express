@@ -64,6 +64,19 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .book-card__actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .book-card__delete-form {
+        margin: 0;
     }
 
     .book-card__price {
@@ -80,54 +93,16 @@
         color: white;
         cursor: pointer;
         font-size: 14px;
+        font-family: inherit;
+        text-decoration: none;
     }
 
     .book-card__button:hover {
         background-color: #444;
     }
 
-    /* Планшет */
-    @media (max-width: 900px) {
-        .books-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    /* Телефон */
-    @media (max-width: 650px) {
-        .books-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .book-card__image {
-            height: 220px;
-        }
-
-        .book-card__content {
-            padding: 15px;
-        }
-
-        .book-card__title {
-            font-size: 17px;
-        }
-
-        .book-card__bottom {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 10px;
-        }
-
-        .book-card__button {
-            width: 100%;
-        }
-    }
-
-    /* Маленький телефон */
-    @media (max-width: 400px) {
-        .books-grid {
-            grid-template-columns: 1fr;
-        }
+    .book-card__button_del:hover {
+        background-color: #b52b36;
     }
 </style>
 
@@ -136,13 +111,10 @@
     <h1>Books</h1>
 
     <div class="books-grid">
-        <% books.forEach(book => { %>
+        <% books.forEach(book=> { %>
             <article class="book-card">
                 <div class="book-card__image">
-                    <img
-                        src="/image/<%= book.image %>"
-                        alt="<%= book.title %>"
-                    >
+                    <img src="/image/<%= book.image %>" alt="<%= book.title %>">
                 </div>
                 <div class="book-card__content">
                     <h2 class="book-card__title">
@@ -152,12 +124,17 @@
                         <span class="book-card__price">
                             <%= book.price %> $
                         </span>
-                        <a href="/books/<%= book.id %>" class="book-card__button text-decoration-none">
-                            Подробнее
-                        </a>
+                        <div class="book-card__actions">
+                            <a href="/books/<%= book.id %>" class="book-card__button text-decoration-none">
+                                Подробнее
+                            </a>
+                            <form action="/books/delete/<%= book.id %>" method="post" class="book-card__delete-form" onsubmit="return confirm('Удалить эту книгу?')">
+                                <button type="submit" class="book-card__button book-card__button_del">Удалить</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </article>
-        <% }) %>
+            <% }) %>
     </div>
 </div>

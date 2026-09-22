@@ -4,8 +4,8 @@ import { BookResponseType } from "../types/bookResType.js";
 import { books } from "../data/books.js";
 import { compareBook } from "../utilis/showBooks.js";
 import { pool } from "../db/db_connection.js";
-import multer from "multer"
 import path from "node:path";
+import upload from "../middlewares/multer.js";
 
 const router = Router()
 
@@ -25,23 +25,43 @@ router.get(
 router.post(
     "/add-book",
     upload.single("image"),
-    (
-        req: Request<{}, BookCreateType>,
-        res: Response,
-    ) => {
-        const { title, price, year } = req.body
-        const is_active = req.body.is_active ? true : false
-        const book: BookType = {
-            id: 10000,
-            title,
-            price,
-            is_active,
-            image: req.image
+    async (req: Request<{}, unknown, BookCreateType>, res: Response) => {
+        const { title, price } = req.body;
+        const image = req.file?.filename;
+        try {
+            await pool.query(
+                `INSERT INTO books (title, price, is_active, image)
+         VALUES ($1, $2, $3, $4)`,
+                [title, price, Boolean(req.body.is_active), image]
+            );
+
+            res.redirect("/books");
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Не удалось сохранить книгу");
         }
-        console.log(req.body)
-        res.end()
     }
-)
+);
+
+
+router.post('/delete/:id', async (req: Request<{ id: string }>, res: Response) => {
+    const id = Number(req.params.id);
+
+    try {
+        const result = await pool.query(
+            "DELETE FROM public.books WHERE id = $1 RETURNING id",
+            [id]
+        );
+        if (result.rowCount === 0) {
+            res.status(404).send("Книга не найдена");
+            return;
+        }
+        res.redirect("/books");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Не удалось удалить книгу");
+    }
+});
 
 // GET /books: книги из PostgreSQL для страницы каталога.
 router.get("/",
