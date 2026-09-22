@@ -3,25 +3,15 @@ import { BookType, BookCreateType } from "../types/BookType.js";
 import { BookResponseType } from "../types/bookResType.js";
 import { books } from "../data/books.js";
 import { compareBook } from "../utilis/showBooks.js";
-import { pool } from "../db/database.js";
+import { pool } from "../db/db_connection.js";
 import multer from "multer"
 import path from "node:path";
 
 const router = Router()
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join("public", "image"))
-    },
-    filename: (req, file, cb) => {
-        const uniqueFileName = Date.now() + '_' + file.originalname
-        req.image = uniqueFileName
-        cb(null, uniqueFileName)
-    }
-})
-const upload = multer({ storage })
 
-//add Books 
+
+//add Books
 router.get(
     "/add-book",
     (
@@ -54,17 +44,24 @@ router.post(
 )
 
 // GET /books: книги из PostgreSQL для страницы каталога.
-router.get("/", async (req, res, next) => {
-    try {
-        const result = await pool.query("SELECT * FROM public.books ORDER BY id");
-        res.render("pages/book", {
-            books: result.rows,
-            title: "Книги"
-        });
-    } catch (error) {
-        next(error);
-    }
-});
+router.get("/",
+    async (req: Request<{}, BookResponseType, null, { title: string }>,
+        res: Response) => {
+        try {
+            // const data = await fetch(`${process.env.PATH_TO_JSON_SERVER}/book`)
+            // const json = await data.json()
+            // console.log(json)
+            // res.render("pages/books", { book: json, title: "Books" })
+
+            const result = await pool.query("SELECT * FROM public.books ORDER BY id");
+            res.render("pages/book", {
+                books: result.rows,
+                title: "Книги"
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    });
 
 router.post('/books', (req: Request<{}, BookResponseType, BookCreateType>, res) => {
     const body = req.body

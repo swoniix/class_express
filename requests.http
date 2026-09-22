@@ -5,7 +5,16 @@ GET  http://localhost:3200/books
 ###
 
 DELETE http://localhost:3200/books/2
+### 
 
+POST  http://localhost:3000/authors
+Content-Type: application/json
+
+{
+    "id":19,
+    "name": "AuthorName",
+    "surname": "AuthorSurname"
+}
 ###
 PUT http://localhost:3200/books/4
 Content-Type: application/json
