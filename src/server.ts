@@ -16,11 +16,11 @@ const PORT = process.env.PORT || 3200
 const HOST = process.env.HOST || "http://localhost"
 
 const app = express()
-app.use(loggerMiddleware);
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static("public"))
+app.use(express.static(path.join(__dirname, "..", "public")))
 app.use(express.json()) //body -> json
+app.use(loggerMiddleware);
 // //middleware - попередній обробник
 
 app.set("views", path.join(__dirname, "..", "views"));

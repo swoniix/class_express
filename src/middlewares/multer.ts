@@ -1,11 +1,15 @@
 import multer from "multer";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+const imageDirectory = path.join(currentDirectory, "..", "..", "public", "image");
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join("public", "image"));
+    destination: (_req, _file, cb) => {
+        cb(null, imageDirectory);
     },
-    filename: (req, file, cb) => {
+    filename: (_req, file, cb) => {
         const uniqueName = Date.now() + "-" + file.originalname;
 
         cb(null, uniqueName);

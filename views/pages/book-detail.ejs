@@ -3,8 +3,16 @@
   <% if (book) { %>
     <div class="row g-4 align-items-start">
       <div class="col-md-4">
-        <img src="/image/<%= book.image %>" alt="<%= book.title %>"
-             class="img-fluid rounded shadow-sm" style="max-height: 480px;">
+        <% if (book.image) { %>
+          <img
+            src="<%= book.image.startsWith('/') ? `/image${book.image}` : `/image/${book.image}` %>"
+            alt="<%= book.title %>"
+            class="img-fluid rounded shadow-sm"
+            style="max-height: 480px;"
+          >
+        <% } else { %>
+          <div class="p-5 bg-light rounded text-center text-muted">Нет обложки</div>
+        <% } %>
       </div>
       <div class="col-md-8">
         <p class="text-muted">Книга № <%= book.id %></p>

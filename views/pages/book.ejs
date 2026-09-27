@@ -114,7 +114,14 @@
         <% books.forEach(book=> { %>
             <article class="book-card">
                 <div class="book-card__image">
-                    <img src="/image/<%= book.image %>" alt="<%= book.title %>">
+                    <% if (book.image) { %>
+                        <img
+                            src="<%= book.image.startsWith('/') ? `/image${book.image}` : `/image/${book.image}` %>"
+                            alt="<%= book.title %>"
+                        >
+                    <% } else { %>
+                        <div class="book-card__image-placeholder">Нет обложки</div>
+                    <% } %>
                 </div>
                 <div class="book-card__content">
                     <h2 class="book-card__title">
@@ -128,7 +135,8 @@
                             <a href="/books/<%= book.id %>" class="book-card__button text-decoration-none">
                                 Подробнее
                             </a>
-                            <form action="/books/delete/<%= book.id %>" method="post" class="book-card__delete-form" onsubmit="return confirm('Удалить эту книгу?')">
+                            <form action="/books/delete/<%= book.id %>" method="post" class="book-card__delete-form"
+                                onsubmit="return confirm('Удалить эту книгу?')">
                                 <button type="submit" class="book-card__button book-card__button_del">Удалить</button>
                             </form>
                         </div>
