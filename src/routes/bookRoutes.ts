@@ -41,6 +41,40 @@ router.post(
     }
 );
 
+// edit Book
+router.post(
+    "/edit/:id",
+    upload.single("image"),
+    async (req: Request<{ id: string }, unknown, BookCreateType>, res: Response) => {
+        const id = Number(req.params.id);
+        const { title, price } = req.body;
+        const image = req.file?.filename;
+
+        try {
+            const result = await pool.query(
+                `UPDATE public.books
+                 SET title = $1,
+                     price = $2,
+                     is_active = $3,
+                     image = COALESCE($4, image)
+                 WHERE id = $5
+                 RETURNING id`,
+                [title, price, Boolean(req.body.is_active), image, id]
+            );
+
+            if (result.rowCount === 0) {
+                res.status(404).send("Книга не найдена");
+                return;
+            }
+
+            res.redirect("/books");
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Не удалось обновить книгу");
+        }
+    }
+);
+
 
 router.post('/delete/:id', async (req: Request<{ id: string }>, res: Response) => {
     const id = Number(req.params.id);

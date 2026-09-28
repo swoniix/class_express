@@ -7,6 +7,9 @@
     </a>
 
     <div class="d-flex gap-3">
+      <% if (username) { %>
+        <span class="text-secondary">Привет, <%= username %></span>
+      <% } %>
       <a href="/" class="text-dark text-decoration-none">Главная</a>
       <a href="/books" class="text-dark text-decoration-none">Книги</a>
     </div>

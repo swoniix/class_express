@@ -6,6 +6,7 @@ import ejs from "ejs"
 import expressEjsLayouts from "express-ejs-layouts"
 import { fileURLToPath } from "node:url"
 import { loggerMiddleware } from "./middlewares/loggerMiddleware.js"
+import authMiddleware from "./middlewares/authMiddleware.js"
 import cookieParser from "cookie-parser"
 
 const __filename = fileURLToPath(import.meta.url)
@@ -17,6 +18,7 @@ const HOST = process.env.HOST || "http://localhost"
 
 const app = express()
 app.use(cookieParser());
+app.use(authMiddleware);
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, "..", "public")))
 app.use(express.json()) //body -> json
@@ -36,7 +38,6 @@ app.get("/cookie", (req: Request, res: Response) => {
         maxAge: 2 * 60 * 1000, //2хв
     });
 
-    res.cookie("username", "KYKA");
     res.cookie("email", "kyka@gmail.com")
     res.send("Cookie created");
 });
