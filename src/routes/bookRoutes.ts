@@ -36,7 +36,7 @@ router.post(
             res.redirect("/books");
         } catch (error) {
             console.error(error);
-            res.status(500).send("Не удалось сохранить книгу");
+            res.status(500).send("We could not save the book.");
         }
     }
 );
@@ -63,14 +63,14 @@ router.post(
             );
 
             if (result.rowCount === 0) {
-                res.status(404).send("Книга не найдена");
+                res.status(404).send("Book not found.");
                 return;
             }
 
             res.redirect("/books");
         } catch (error) {
             console.error(error);
-            res.status(500).send("Не удалось обновить книгу");
+            res.status(500).send("We could not update the book.");
         }
     }
 );
@@ -85,13 +85,13 @@ router.post('/delete/:id', async (req: Request<{ id: string }>, res: Response) =
             [id]
         );
         if (result.rowCount === 0) {
-            res.status(404).send("Книга не найдена");
+            res.status(404).send("Book not found.");
             return;
         }
         res.redirect("/books");
     } catch (error) {
         console.error(error);
-        res.status(500).send("Не удалось удалить книгу");
+        res.status(500).send("We could not delete the book.");
     }
 });
 
@@ -108,10 +108,14 @@ router.get("/",
             const result = await pool.query("SELECT * FROM public.books ORDER BY id");
             res.render("pages/book", {
                 books: result.rows,
-                title: "Книги"
+                title: "Books"
             });
         } catch (error) {
             console.log(error)
+            res.status(500).render("pages/error", {
+                title: "Books are not available",
+                message: "We cannot open the catalogue now. Please try again later."
+            });
         }
     });
 
@@ -145,7 +149,7 @@ router.get("/:id", async (req, res) => {
     );
     const book = data.rows[0];
     if (!book) {
-        res.status(404).send("Книга не найдена");
+        res.status(404).send("Book not found.");
         return;
     }
     res.render("pages/book-detail", {

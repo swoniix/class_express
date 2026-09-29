@@ -1,0 +1,33 @@
+<main class="login-page">
+  <section class="login-card">
+    <div class="login-card__intro">
+      <span class="page-kicker">Welcome back</span>
+      <h1>Log in to BookShop.</h1>
+      <p>Enter your name and password to continue.</p>
+      <div class="login-card__books" aria-hidden="true">
+        <img src="/image/covers/jane-eyre.svg" alt="">
+        <img src="/image/covers/alice.svg" alt="">
+        <img src="/image/covers/hobbit.svg" alt="">
+      </div>
+    </div>
+
+    <div class="login-card__form">
+      <% if (typeof error !== "undefined" && error) { %>
+        <div class="theme-alert" role="alert"><%= error %></div>
+      <% } %>
+
+      <form action="/login" method="POST">
+        <div class="theme-field">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" placeholder="Enter your username" autocomplete="username" required>
+        </div>
+        <div class="theme-field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="theme-button theme-button--full">Log in</button>
+      </form>
+      <p class="login-card__help">Demo account: <strong>admin</strong> / <strong>1234</strong></p>
+    </div>
+  </section>
+</main>

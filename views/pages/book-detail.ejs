@@ -1,24 +1,26 @@
-<main class="container py-5">
-  <a href="/books" class="btn btn-outline-secondary mb-4">← Все книги</a>
+<main class="detail-page container">
+  <a href="/books" class="page-back-link">← All books</a>
   <% if (book) { %>
-    <div class="row g-4 align-items-start">
-      <div class="col-md-4">
+    <div class="detail-card">
+      <div class="detail-card__cover">
         <% if (book.image) { %>
           <img
             src="<%= book.image.startsWith('/') ? `/image${book.image}` : `/image/${book.image}` %>"
             alt="<%= book.title %>"
-            class="img-fluid rounded shadow-sm"
-            style="max-height: 480px;"
+            class="detail-card__image"
           >
         <% } else { %>
-          <div class="p-5 bg-light rounded text-center text-muted">Нет обложки</div>
+          <div class="detail-card__placeholder">No cover</div>
         <% } %>
       </div>
-      <div class="col-md-8">
-        <p class="text-muted">Книга № <%= book.id %></p>
+      <div class="detail-card__content">
+        <p class="detail-card__label">Book #<%= book.id %></p>
         <h1><%= book.title %></h1>
-        <p class="fs-3 fw-bold mt-3"><%= book.price %> $</p>
-        <p><%= book.is_active ? "В наличии" : "Нет в наличии" %></p>
+        <p class="detail-card__price">$<%= book.price %></p>
+        <p class="detail-card__status <%= book.is_active ? 'is-available' : '' %>">
+          <%= book.is_active ? "Available now" : "Not available" %>
+        </p>
+        <a href="/books" class="theme-button">Continue shopping</a>
       </div>
     </div>
   <% } else { %>

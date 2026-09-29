@@ -1,311 +1,134 @@
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-        color: #222;
-    }
+<main class="catalogue-page">
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <div>
+        <span class="page-kicker">Our collection</span>
+        <h1>Choose your next book.</h1>
+        <p>Look through the catalogue and find a story for your free time.</p>
+      </div>
+      <a href="/books/add-book" class="theme-button">+ Add a book</a>
+    </div>
+  </section>
 
-    .books-page {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 20px;
-    }
-
-    .books-page h1 {
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 36px;
-    }
-
-    .books-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 25px;
-    }
-
-    .book-card {
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        transition: 0.3s;
-    }
-
-    .book-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    .book-card__image {
-        width: 100%;
-        height: 280px;
-        overflow: hidden;
-    }
-
-    .book-card__image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-
-    .book-card__content {
-        padding: 20px;
-    }
-
-    .book-card__title {
-        margin: 0 0 20px;
-        font-size: 20px;
-    }
-
-    .book-card__bottom {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .book-card__actions {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .book-card__delete-form {
-        margin: 0;
-    }
-
-    .book-card__price {
-        font-size: 20px;
-        font-weight: bold;
-        color: #e63946;
-    }
-
-    .book-card__button {
-        border: none;
-        padding: 10px 16px;
-        border-radius: 8px;
-        background-color: #222;
-        color: white;
-        cursor: pointer;
-        font-size: 14px;
-        font-family: inherit;
-        text-decoration: none;
-    }
-
-    .book-card__button:hover {
-        background-color: #444;
-    }
-
-    .book-card__button_edit {
-        background-color: #0d6efd;
-    }
-
-    .book-card__button_edit:hover {
-        background-color: #0b5ed7;
-    }
-
-    .book-card__button_del:hover {
-        background-color: #b52b36;
-    }
-
-    .edit-modal {
-        position: fixed;
-        inset: 0;
-        z-index: 1000;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        background: rgba(0, 0, 0, 0.55);
-    }
-
-    .edit-modal_open {
-        display: flex;
-    }
-
-    .edit-modal__content {
-        width: 100%;
-        max-width: 520px;
-        padding: 25px;
-        background: white;
-        border-radius: 15px;
-    }
-
-    .edit-modal__header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
-    .edit-modal__header h2 {
-        margin: 0;
-    }
-
-    .edit-modal__close {
-        border: none;
-        background: transparent;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    .edit-modal__group {
-        margin-bottom: 16px;
-    }
-
-    .edit-modal__group label {
-        display: block;
-        margin-bottom: 6px;
-        font-weight: bold;
-    }
-
-    .edit-modal__group input[type="text"],
-    .edit-modal__group input[type="number"],
-    .edit-modal__group input[type="file"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #aaa;
-        border-radius: 6px;
-    }
-
-    .edit-modal__checkbox {
-        display: flex !important;
-        align-items: center;
-        gap: 8px;
-    }
-</style>
-
-
-<div class="books-page">
-    <h1>Books</h1>
+  <section class="container catalogue-section">
+    <% if (books.length === 0) { %>
+      <div class="empty-state">
+        <h2>No books yet</h2>
+        <p>Add the first book to the catalogue.</p>
+      </div>
+    <% } %>
 
     <div class="books-grid">
-        <% books.forEach(book=> { %>
-            <article class="book-card">
-                <div class="book-card__image">
-                    <% if (book.image) { %>
-                        <img
-                            src="<%= book.image.startsWith('/') ? `/image${book.image}` : `/image/${book.image}` %>"
-                            alt="<%= book.title %>"
-                        >
-                    <% } else { %>
-                        <div class="book-card__image-placeholder">Нет обложки</div>
-                    <% } %>
-                </div>
-                <div class="book-card__content">
-                    <h2 class="book-card__title">
-                        <%= book.title %>
-                    </h2>
-                    <div class="book-card__bottom">
-                        <span class="book-card__price">
-                            <%= book.price %> $
-                        </span>
-                        <div class="book-card__actions">
-                            <button
-                                type="button"
-                                class="book-card__button book-card__button_edit"
-                                data-edit-book
-                                data-id="<%= book.id %>"
-                                data-title="<%= book.title %>"
-                                data-price="<%= book.price %>"
-                                data-active="<%= book.is_active %>"
-                            >
-                                Edit
-                            </button>
-                            <a href="/books/<%= book.id %>" class="book-card__button text-decoration-none">
-                                Подробнее
-                            </a>
-                            <form action="/books/delete/<%= book.id %>" method="post" class="book-card__delete-form"
-                                onsubmit="return confirm('Удалить эту книгу?')">
-                                <button type="submit" class="book-card__button book-card__button_del">Удалить</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </article>
-            <% }) %>
+      <% books.forEach(book => { %>
+        <article class="book-card">
+          <a href="/books/<%= book.id %>" class="book-card__image">
+            <% if (book.image) { %>
+              <img
+                src="<%= book.image.startsWith('/') ? `/image${book.image}` : `/image/${book.image}` %>"
+                alt="<%= book.title %>"
+              >
+            <% } else { %>
+              <div class="book-card__image-placeholder">No cover</div>
+            <% } %>
+            <span class="book-card__badge"><%= book.is_active ? "Available" : "Not available" %></span>
+          </a>
+
+          <div class="book-card__content">
+            <p class="book-card__label">Book #<%= book.id %></p>
+            <h2 class="book-card__title"><%= book.title %></h2>
+            <span class="book-card__price">$<%= book.price %></span>
+
+            <div class="book-card__actions">
+              <a href="/books/<%= book.id %>" class="book-card__button">Details</a>
+              <button
+                type="button"
+                class="book-card__button book-card__button--soft"
+                data-edit-book
+                data-id="<%= book.id %>"
+                data-title="<%= book.title %>"
+                data-price="<%= book.price %>"
+                data-active="<%= book.is_active %>"
+              >Edit</button>
+              <form
+                action="/books/delete/<%= book.id %>"
+                method="post"
+                class="book-card__delete-form"
+                onsubmit="return confirm('Do you want to delete this book?')"
+              >
+                <button type="submit" class="book-card__button book-card__button--text">Delete</button>
+              </form>
+            </div>
+          </div>
+        </article>
+      <% }) %>
     </div>
-</div>
+  </section>
+</main>
 
 <div class="edit-modal" id="editModal" aria-hidden="true">
-    <div class="edit-modal__content" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-        <div class="edit-modal__header">
-            <h2 id="editModalTitle">Edit book</h2>
-            <button type="button" class="edit-modal__close" data-close-modal aria-label="Закрыть">&times;</button>
-        </div>
-
-        <form id="editBookForm" method="post" enctype="multipart/form-data">
-            <div class="edit-modal__group">
-                <label for="editTitle">Title:</label>
-                <input type="text" name="title" id="editTitle" required>
-            </div>
-
-            <div class="edit-modal__group">
-                <label for="editPrice">Price:</label>
-                <input type="number" name="price" id="editPrice" step="0.01" min="0" required>
-            </div>
-
-            <div class="edit-modal__group">
-                <label for="editImage">New image:</label>
-                <input type="file" name="image" id="editImage" accept="image/png, image/jpeg, image/webp">
-                <small>Если файл не выбран, останется старая обложка.</small>
-            </div>
-
-            <div class="edit-modal__group">
-                <label for="editActive" class="edit-modal__checkbox">
-                    <input type="checkbox" name="is_active" id="editActive" value="true">
-                    Is Active?
-                </label>
-            </div>
-
-            <button type="submit" class="book-card__button">Save</button>
-        </form>
+  <div class="edit-modal__content" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="edit-modal__header">
+      <div>
+        <span class="page-kicker">Update the details</span>
+        <h2 id="editModalTitle">Edit book</h2>
+      </div>
+      <button type="button" class="edit-modal__close" data-close-modal aria-label="Close">&times;</button>
     </div>
+
+    <form id="editBookForm" method="post" enctype="multipart/form-data">
+      <div class="theme-field">
+        <label for="editTitle">Title</label>
+        <input type="text" name="title" id="editTitle" required>
+      </div>
+      <div class="theme-field">
+        <label for="editPrice">Price</label>
+        <input type="number" name="price" id="editPrice" step="0.01" min="0" required>
+      </div>
+      <div class="theme-field">
+        <label for="editImage">New cover</label>
+        <input type="file" name="image" id="editImage" accept="image/png, image/jpeg, image/webp">
+        <small>Leave this field empty to keep the old cover.</small>
+      </div>
+      <label for="editActive" class="theme-checkbox">
+        <input type="checkbox" name="is_active" id="editActive" value="true">
+        The book is available
+      </label>
+      <button type="submit" class="theme-button theme-button--full">Save changes</button>
+    </form>
+  </div>
 </div>
 
 <script>
-    const editModal = document.querySelector("#editModal");
-    const editBookForm = document.querySelector("#editBookForm");
-    const editTitle = document.querySelector("#editTitle");
-    const editPrice = document.querySelector("#editPrice");
-    const editActive = document.querySelector("#editActive");
-    const editImage = document.querySelector("#editImage");
+  const editModal = document.querySelector("#editModal");
+  const editBookForm = document.querySelector("#editBookForm");
+  const editTitle = document.querySelector("#editTitle");
+  const editPrice = document.querySelector("#editPrice");
+  const editActive = document.querySelector("#editActive");
+  const editImage = document.querySelector("#editImage");
 
-    const closeEditModal = () => {
-        editModal.classList.remove("edit-modal_open");
-        editModal.setAttribute("aria-hidden", "true");
-        editImage.value = "";
-    };
+  const closeEditModal = () => {
+    editModal.classList.remove("edit-modal_open");
+    editModal.setAttribute("aria-hidden", "true");
+    editImage.value = "";
+  };
 
-    document.querySelectorAll("[data-edit-book]").forEach((button) => {
-        button.addEventListener("click", () => {
-            editBookForm.action = `/books/edit/${button.dataset.id}`;
-            editTitle.value = button.dataset.title;
-            editPrice.value = button.dataset.price;
-            editActive.checked = button.dataset.active === "true";
-
-            editModal.classList.add("edit-modal_open");
-            editModal.setAttribute("aria-hidden", "false");
-            editTitle.focus();
-        });
+  document.querySelectorAll("[data-edit-book]").forEach((button) => {
+    button.addEventListener("click", () => {
+      editBookForm.action = `/books/edit/${button.dataset.id}`;
+      editTitle.value = button.dataset.title;
+      editPrice.value = button.dataset.price;
+      editActive.checked = button.dataset.active === "true";
+      editModal.classList.add("edit-modal_open");
+      editModal.setAttribute("aria-hidden", "false");
+      editTitle.focus();
     });
+  });
 
-    document.querySelector("[data-close-modal]").addEventListener("click", closeEditModal);
-
-    editModal.addEventListener("click", (event) => {
-        if (event.target === editModal) {
-            closeEditModal();
-        }
-    });
-
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-            closeEditModal();
-        }
-    });
+  document.querySelector("[data-close-modal]").addEventListener("click", closeEditModal);
+  editModal.addEventListener("click", (event) => {
+    if (event.target === editModal) closeEditModal();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeEditModal();
+  });
 </script>

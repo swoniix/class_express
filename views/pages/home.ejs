@@ -1,4 +1,90 @@
-<h1>Home page</h1>
-<p>Welcome, <%= name %> !</p>
-<img src="/image/rab.jpg" alt="Картинка на главной" width="300">
-<a href="/books">Перейти к книгам</a>
+<main class="home-page">
+  <section class="home-hero">
+    <div class="container home-hero__inner">
+      <div class="home-hero__content">
+        <span class="home-hero__eyebrow">Your next favourite story</span>
+        <h1 class="home-hero__title">Find a book you will love to read.</h1>
+
+        <% if (username && username !== "guest") { %>
+          <p class="home-hero__welcome">
+            Good to see you again, <strong><%= username %></strong>!
+          </p>
+        <% } else { %>
+          <p class="home-hero__welcome">
+            Welcome to BookShop. It is a friendly place for people who love books.
+          </p>
+        <% } %>
+
+        <div class="home-hero__actions">
+          <a href="/books" class="home-button home-button--primary">
+            Explore books <span aria-hidden="true">→</span>
+          </a>
+          <% if (!username || username === "guest") { %>
+            <a href="/login" class="home-button home-button--secondary">Log in</a>
+          <% } %>
+        </div>
+
+        <div class="home-hero__stats" aria-label="Shop benefits">
+          <div><strong>100+</strong><span>books to choose</span></div>
+          <div><strong>24/7</strong><span>shop access</span></div>
+          <div><strong>10</strong><span>popular genres</span></div>
+        </div>
+      </div>
+
+      <div class="home-hero__visual" aria-label="Popular books">
+        <div class="home-book home-book--left">
+          <img src="/image/covers/1984.svg" alt="1984 book cover">
+        </div>
+        <div class="home-book home-book--center">
+          <img src="/image/covers/harry-potter.svg" alt="Harry Potter book cover">
+        </div>
+        <div class="home-book home-book--right">
+          <img src="/image/covers/little-prince.svg" alt="The Little Prince book cover">
+        </div>
+        <span class="home-hero__shape home-hero__shape--one"></span>
+        <span class="home-hero__shape home-hero__shape--two"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-benefits">
+    <div class="container">
+      <div class="home-section-heading">
+        <span>Why BookShop</span>
+        <h2>Everything you need for a good reading time.</h2>
+      </div>
+
+      <div class="home-benefits__grid">
+        <article class="home-feature-card">
+          <div class="home-feature-card__icon" aria-hidden="true">✦</div>
+          <h3>Good book choices</h3>
+          <p>We collect famous classics and modern stories that are worth your time.</p>
+        </article>
+        <article class="home-feature-card">
+          <div class="home-feature-card__icon" aria-hidden="true">⌁</div>
+          <h3>Simple catalogue</h3>
+          <p>Find a book, check its price and open the details in a few easy steps.</p>
+        </article>
+        <article class="home-feature-card">
+          <div class="home-feature-card__icon" aria-hidden="true">♡</div>
+          <h3>Made for readers</h3>
+          <p>BookShop is a warm and simple space for readers and their favourite stories.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-cta">
+    <div class="container">
+      <div class="home-cta__card">
+        <div>
+          <span>Ready to choose?</span>
+          <h2>Open the catalogue and find your next story.</h2>
+        </div>
+        <a href="/books" class="home-button home-button--light">
+          View all books <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>

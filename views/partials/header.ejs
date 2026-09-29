@@ -1,18 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<header class="bg-light border-bottom">
-  <nav class="container d-flex flex-wrap align-items-center justify-content-between py-3">
-    <a href="/" class="fs-4 fw-bold text-dark text-decoration-none">
-      BookShop
-    </a>
+<header class="site-header">
+  <nav class="container site-nav" aria-label="Main navigation">
+    <a href="/" class="site-logo">Book<span>Shop</span></a>
 
-    <div class="d-flex gap-3">
-      <% if (username) { %>
-        <span class="text-secondary">Привет, <%= username %></span>
+    <div class="site-nav__links">
+      <a href="/">Home</a>
+      <a href="/books">Books</a>
+      <a href="/books/add-book">Add a book</a>
+
+      <% if (username && username !== "guest") { %>
+        <span class="site-nav__user">Hi, <strong><%= username %></strong></span>
+        <form action="/logout" method="POST" class="site-nav__form">
+          <button type="submit" class="site-nav__button">Log out</button>
+        </form>
+      <% } else { %>
+        <a href="/login" class="site-nav__button">Log in</a>
       <% } %>
-      <a href="/" class="text-dark text-decoration-none">Главная</a>
-      <a href="/books" class="text-dark text-decoration-none">Книги</a>
     </div>
   </nav>
 </header>
-</html>
